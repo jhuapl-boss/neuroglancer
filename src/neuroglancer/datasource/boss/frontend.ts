@@ -54,6 +54,7 @@ interface ChannelInfo {
   scales: ScaleInfo[];
   description: string;
   key: string;
+  base_resolution: number;
 }
 
 interface CoordinateFrameInfo {
@@ -160,6 +161,7 @@ function parseChannelInfo(obj: any): ChannelInfo {
     downsampled: downsampleStatus,
     scales: [],
     key: verifyObjectProperty(obj, 'name', verifyString),
+    base_resolution: verifyObjectProperty(obj, 'base_resolution', verifyInt),
   };
 }
 
@@ -343,7 +345,7 @@ export class MultiscaleVolumeChunkSource implements GenericMultiscaleVolumeChunk
             collection: this.experimentInfo.collection,
             experiment: this.experimentInfo.key,
             channel: this.channel,
-            resolution: scaleInfo.key,
+            resolution: this.channelInfo.base_resolution,
             encoding: this.encoding,
             window: this.window,
           }}));
@@ -388,7 +390,8 @@ export function getChannelInfo(
         collection: collection,
         experiment: experiment,
         channel: channel,
-        type: 'boss:getChannelInfo'
+        type: 'boss:getChannelInfo',
+        base_resolution: 'boss:getChannelInfo',
       },
       () => makeRequest(hostnames, credentialsProvider, {
               method: 'GET',
