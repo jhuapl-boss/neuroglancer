@@ -26,3 +26,8 @@ default_credentials_manager.register(
 default_credentials_manager.register(
     u'gcs',
     lambda _parameters: google_credentials.get_google_application_default_credentials_provider())
+
+default_credentials_manager.register(
+    u'boss',
+    lambda _parameters: google_credentials.BossCredentialsProvider()
+)
