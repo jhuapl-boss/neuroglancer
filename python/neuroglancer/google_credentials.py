@@ -88,21 +88,3 @@ def get_google_application_default_credentials_provider():
             _global_google_application_default_credentials_provider = GoogleApplicationDefaultCredentialsProvider(
             )
         return _global_google_application_default_credentials_provider
-
-class BossCredentialsProvider(credentials_provider.CredentialsProvider):
-    def __init__(self):
-        super(BossCredentialsProvider, self).__init__()
-
-        # Make sure logging is initialized.  Does nothing if logging has already
-        # been initialized.
-        logging.basicConfig()
-
-        self._lock = threading.Lock()
-        self._credentials = None
-
-    def get_new(self):
-        def func():
-            with self._lock:
-                return dict(tokenType=u'Token', accessToken='public')
-
-        return run_on_new_thread(func)
