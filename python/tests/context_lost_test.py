@@ -49,6 +49,7 @@ window.webglLoseContext.restoreContext();
     time.sleep(3) # Wait a few seconds for log messages to be written
     browser_log = webdriver.get_log_messages()
     assert 'WebGL context restored' in browser_log
+    time.sleep(2)
     screenshot = webdriver.viewer.screenshot(size=[10, 10]).screenshot
     np.testing.assert_array_equal(screenshot.image_pixels,
                                   np.tile(np.array([255, 0, 0, 255], dtype=np.uint8), (10, 10, 1)))
