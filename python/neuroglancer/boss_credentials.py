@@ -2,6 +2,8 @@ from . import credentials_provider
 from .futures import run_on_new_thread
 import logging
 import threading
+import os
+from six.moves.configparser import ConfigParser
 
 class BossCredentialsProvider(credentials_provider.CredentialsProvider):
     def __init__(self):
@@ -25,8 +27,20 @@ class BossCredentialsProvider(credentials_provider.CredentialsProvider):
                     return self._credentials
 
                 # If not, look for config file in intern file location
+                config_path = '~/.intern/intern.cfg'
+                if os.path.isfile(os.path.expanduser(config_path)):
+                    with open(os.path.expanduser(config_path), 'r') as config_file_handle:
+                        config_parser = ConfigParser()
+                        config_parser.readfp(config_file_handle)
+                        try:
+                            self._credentials = config_parser["Default"]["token"]
+                            print("Using token from intern config file")
+                            return dict(tokenType=u'Token', accessToken=self._credentials)
+                        except:
+                            pass
 
                 # Else, use "public"
+                print("Accessing Boss data using token 'public'")
                 return dict(tokenType=u'Token', accessToken='public')
 
         return run_on_new_thread(func)
