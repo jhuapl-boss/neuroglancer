@@ -17,6 +17,7 @@ class BossCredentialsProvider(credentials_provider.CredentialsProvider):
         self._credentials = None
 
     def set_token(self, token):
+        # Token should be a string
         self._credentials = dict(tokenType=u'Token', accessToken=token)
 
     def get_new(self):
@@ -32,8 +33,16 @@ class BossCredentialsProvider(credentials_provider.CredentialsProvider):
                     with open(os.path.expanduser(config_path), 'r') as config_file_handle:
                         config_parser = ConfigParser()
                         config_parser.readfp(config_file_handle)
+                        # Try Default section first
                         try:
                             self._credentials = config_parser["Default"]["token"]
+                            print("Using token from intern config file")
+                            return dict(tokenType=u'Token', accessToken=self._credentials)
+                        except:
+                            pass
+                        # Try Volume Service section second
+                        try:
+                            self._credentials = config_parser["Volume Service"]["token"]
                             print("Using token from intern config file")
                             return dict(tokenType=u'Token', accessToken=self._credentials)
                         except:
